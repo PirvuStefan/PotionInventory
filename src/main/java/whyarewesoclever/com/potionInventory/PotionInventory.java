@@ -6,7 +6,9 @@ import org.bukkit.Material;
 import org.bukkit.command.CommandMap;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
@@ -17,7 +19,7 @@ import java.lang.reflect.Field;
 
 import static org.bukkit.Bukkit.getLogger;
 
-public final class PotionInventory extends JavaPlugin {
+public final class PotionInventory extends JavaPlugin implements Listener {
 
     public static PotionInventory getInstance() {
         return getPlugin(PotionInventory.class);
@@ -56,6 +58,10 @@ public final class PotionInventory extends JavaPlugin {
                 getLogger().info("Failed to create folder 'inventories'.");
             }
         }
+
+       getServer().getPluginManager().registerEvents(this, this);  // should register the events
+        // getServer().getPluginManager().registerEvents(new PotionInventory(), this);
+        // this will register the events for the plugin
 
     }
 
@@ -103,6 +109,17 @@ public final class PotionInventory extends JavaPlugin {
         getLogger().info(view.getTitle());
         if( !block) return; // we dont register if it is other inventory
 
+    }
+
+    @EventHandler
+    public void onInventoryClose(InventoryCloseEvent event){
+        Player player = (Player) event.getPlayer();
+        InventoryView view = player.getOpenInventory();
+        Inventory inventory = event.getInventory();
+        boolean block = view.getTitle().equals("ᴘᴏᴛɪᴏɴ ɪɴᴠᴇɴᴛᴏʀ");
+        if( !block) return; // we dont register if it is other inventory
+        getLogger().info("Inventory closed");
+        // save the inventory to a file because it is updated
     }
 }
 
