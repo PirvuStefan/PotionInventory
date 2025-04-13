@@ -2,12 +2,14 @@ package whyarewesoclever.com.potionInventory;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.command.CommandMap;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.lang.reflect.Field;
 
 public final class PotionInventory extends JavaPlugin {
 
@@ -20,6 +22,18 @@ public final class PotionInventory extends JavaPlugin {
         // there we go
         saveDefaultConfig();
         // this will create the config.yml file if it doesn't exist
+        try {
+            final Field bukkitCommandMap = Bukkit.getServer().getClass().getDeclaredField("commandMap");
+            bukkitCommandMap.setAccessible(true);
+            CommandMap commandMap = (CommandMap) bukkitCommandMap.get(Bukkit.getServer());
+
+            PotionChest reloadCommand = new PotionChest("potioninventory");
+            commandMap.register("potioninventory", reloadCommand);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+
         File folder = getDataFolder();
         if (!folder.exists()) {
             if (folder.mkdir()) {
@@ -54,13 +68,9 @@ public final class PotionInventory extends JavaPlugin {
 
     public void OpenInventory(Player player){
         // open the inventory for the player
-        Inventory inv = Bukkit.createInventory(player, 9, "Potion Inventory");
+        Inventory inv = Bukkit.createInventory(player, 9, "ᴘᴏᴛɪᴏɴ ɪɴᴠᴇɴᴛᴏʀʏ"); // fancy fo
         // add the potions to the inventory
-        for (ItemStack item : player.getInventory().getContents()) {
-            if (CheckPotion(item)) {
-                inv.addItem(item);
-            }
-        } // the fuck ?
+         // the fuck ?
         // open the inventory for the player
         player.openInventory(inv);
     }
