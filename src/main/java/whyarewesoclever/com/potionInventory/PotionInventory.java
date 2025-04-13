@@ -11,6 +11,9 @@ import java.io.File;
 
 public final class PotionInventory extends JavaPlugin {
 
+    public static PotionInventory getInstance() {
+        return getPlugin(PotionInventory.class);
+    }
     @Override
     public void onEnable() {
         // Plugin startup logic
