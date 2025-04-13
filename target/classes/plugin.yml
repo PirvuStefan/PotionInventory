@@ -1,0 +1,4 @@
+name: PotionInventory
+version: '1.0-SNAPSHOT'
+main: whyarewesoclever.com.potionInventory.PotionInventory
+api-version: '1.20'
