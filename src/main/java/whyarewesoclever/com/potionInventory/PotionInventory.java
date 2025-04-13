@@ -7,12 +7,32 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
+
 public final class PotionInventory extends JavaPlugin {
 
     @Override
     public void onEnable() {
         // Plugin startup logic
         // there we go
+        saveDefaultConfig();
+        // this will create the config.yml file if it doesn't exist
+        File folder = getDataFolder();
+        if (!folder.exists()) {
+            if (folder.mkdir()) {
+                getLogger().info("Folder 'PotionInventory' created successfully!");
+            } else {
+                getLogger().info("Failed to create folder 'PotionInventory'.");
+            }
+        }
+        File folder2 = new File(getDataFolder(), "inventories");
+        if (!folder2.exists()) {
+            if (folder2.mkdir()) {
+                getLogger().info("Folder 'inventories' created successfully!");
+            } else {
+                getLogger().info("Failed to create folder 'inventories'.");
+            }
+        }
 
     }
 
@@ -41,6 +61,18 @@ public final class PotionInventory extends JavaPlugin {
         // open the inventory for the player
         player.openInventory(inv);
     }
+
+    // BASIC STRUCTURE //
+    // PotionInventory -> Inventories -> player_name -> 9*4 yml. files
+    // folder -> folder -> folder -> .yml
+    // like ender chest functionalities
+
+    // YML FILE //
+    // PotionType : SPLASH
+    // JSON :
+    // Display
+
+    // amount not necessary since it is unstackable
 }
 
 
