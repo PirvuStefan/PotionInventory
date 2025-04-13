@@ -1,15 +1,21 @@
 package whyarewesoclever.com.potionInventory;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandMap;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.lang.reflect.Field;
+
+import static org.bukkit.Bukkit.getLogger;
 
 public final class PotionInventory extends JavaPlugin {
 
@@ -86,6 +92,18 @@ public final class PotionInventory extends JavaPlugin {
     // Display
 
     // amount not necessary since it is unstackable
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent event){
+
+        Player player = (Player) event.getWhoClicked();
+        InventoryView view = player.getOpenInventory();
+        Inventory inventory = event.getInventory();
+        //boolean block = !view.getTitle().equals(ChatColor.DARK_AQUA + "ᴄʀᴇᴀᴛᴇ ᴄᴜꜱᴛᴏᴍ ᴛʀᴀᴅᴇꜱ");
+        boolean block = view.getTitle().equals("ᴘᴏᴛɪᴏɴ ɪɴᴠᴇɴᴛᴏʀ");
+        getLogger().info(view.getTitle());
+        if( !block) return; // we dont register if it is other inventory
+
+    }
 }
 
 
