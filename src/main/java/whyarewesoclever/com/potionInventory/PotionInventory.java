@@ -18,7 +18,6 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.Objects;
 
 import static org.bukkit.Bukkit.getLogger;
 
@@ -100,7 +99,7 @@ public final class PotionInventory extends JavaPlugin implements Listener {
         PlayerItem[] playStock = inventories.get(PlayerName);
 
         // If the inventory does not exist, initialize it
-        if (playStock == null ) {
+        if (playStock == null) {
             PlayerItem gol = new PlayerItem("AIR", "{}");
             PlayerItem[] array = new PlayerItem[9]; // Creates an array with 9 slots, all initially null.
             for (int i = 0; i < 9; i++) {
@@ -124,7 +123,7 @@ public final class PotionInventory extends JavaPlugin implements Listener {
                 inv.setItem(i, stack);
             }
         }
-       updateInventoryFile(PlayerName, playStock);
+        updateInventoryFile(PlayerName, playStock);
     }
 
     public void updateInventoryFile(String PlayerName, PlayerItem[] playStock){
@@ -180,11 +179,10 @@ public final class PotionInventory extends JavaPlugin implements Listener {
         InventoryView view = player.getOpenInventory();
         Inventory inventory = event.getInventory();
         //boolean block = !view.getTitle().equals(ChatColor.DARK_AQUA + "ᴄʀᴇᴀᴛᴇ ᴄᴜꜱᴛᴏᴍ ᴛʀᴀᴅᴇꜱ");
-        boolean block = view.getTitle().equals("ᴘᴏᴛɪᴏɴ ɪɴᴠᴇɴᴛᴏʀʏ");
+        boolean block = view.getTitle().equals("ᴘᴏᴛɪᴏɴ ɪɴᴠᴇɴᴛᴏʀ");
+        getLogger().info(view.getTitle());
         if( !block) return; // we dont register if it is other inventory
-        getLogger().info("Inventory clicked");
-        if ( !CheckPotion(Objects.requireNonNull(event.getCurrentItem())) )
-            event.setCancelled(true); // cancel the event if the item is a potion
+
     }
 
     @EventHandler
@@ -192,17 +190,12 @@ public final class PotionInventory extends JavaPlugin implements Listener {
         Player player = (Player) event.getPlayer();
         InventoryView view = player.getOpenInventory();
         Inventory inventory = event.getInventory();
-        boolean block = view.getTitle().equals("ᴘᴏᴛɪᴏɴ ɪɴᴠᴇɴᴛᴏʀʏ");
+        boolean block = view.getTitle().equals("ᴘᴏᴛɪᴏɴ ɪɴᴠᴇɴᴛᴏʀ");
         if( !block) return; // we dont register if it is other inventory
         getLogger().info("Inventory closed");
         // save the inventory to a file because it is updated
     }
 
-    public boolean FileExists(String fileName) {
-        File folder = new File(getDataFolder(), "inventories");
-        File file = new File(folder, fileName + ".yml");
-        return file.exists();
-    }
 }
 
 
