@@ -23,7 +23,8 @@ import static org.bukkit.Bukkit.getLogger;
 
 public final class PotionInventory extends JavaPlugin implements Listener {
 
-   Map<String, PlayerItem[/*8*/]> inventories;
+
+    Map<String, PlayerItem[]> inventories = new java.util.HashMap<>();
 
     public static PotionInventory getInstance() {
         return getPlugin(PotionInventory.class);
@@ -88,32 +89,41 @@ public final class PotionInventory extends JavaPlugin implements Listener {
         // add the potions to the inventory
          // the fuck ?
         // open the inventory for the player
+        getLogger().info(player.getName());
+        createInventory(inv,player.getName());
         player.openInventory(inv);
     }
 
-    public void createInventory(Inventory inv, String PlayerName){
-        // create the inventory when we do open the inv
+    public void createInventory(Inventory inv, String PlayerName) {
+        // Retrieve the player's inventory from the map
         PlayerItem[] playStock = inventories.get(PlayerName);
-        if( playStock == null){
-            PlayerItem gol = new PlayerItem("{}","AIR");
-            PlayerItem[] array = new PlayerItem[8]; // Creates an array with 8 slots, all initially null.
-            for( int i = 0 ; i<= 8 ;i++)
+
+        // If the inventory does not exist, initialize it
+        if (playStock == null ) {
+            PlayerItem gol = new PlayerItem("AIR", "{}");
+            PlayerItem[] array = new PlayerItem[9]; // Creates an array with 9 slots, all initially null.
+            for (int i = 0; i < 9; i++) {
                 array[i] = gol;
-            inventories.put(PlayerName,array);
-            // register it in the 'inventories' folder cause we created now, we should also register it in the folder when any changes do occur in the inventory, like when we open the gui and when we close it since that it when we have to stock it
-
-            // updateInvetoryFile()
-
+            }
+            inventories.put(PlayerName, array);
+            playStock = array; // Assign the newly created inventory to playStock
         }
 
-        for( int i = 0; i<= 8 ;i++){
+        // Populate the inventory with items
+        for (int i = 0; i < 9; i++) {
             PlayerItem item = playStock[i];
-            String json = item.getJson();
-            String material = item.getMaterial();
-            String display_name = item.getDisplayName();
-            String custom_name = item.getCustomName();
+            if (item != null) {
+                String json = item.getJson();
+                String material = item.getMaterial();
+                String display_name = item.getDisplayName();
+                String custom_name = item.getCustomName();
 
+                // Add the item to the inventory (example logic, adjust as needed)
+                ItemStack stack = new ItemStack(Material.valueOf(material));
+                inv.setItem(i, stack);
+            }
         }
+       updateInventoryFile(PlayerName, playStock);
     }
 
     public void updateInventoryFile(String PlayerName, PlayerItem[] playStock){
@@ -143,7 +153,7 @@ public final class PotionInventory extends JavaPlugin implements Listener {
             // write the custom name to the file
             try ( java.io.FileWriter writer = new java.io.FileWriter(file, true)) {
                 writer.write(material + "\n");
-                writer.write(json +  custom_name == null ? "" : ( " " + custom_name) +  display_name == null ? "" : (display_name + " ") + "\n");
+                writer.write(json + (custom_name == null ? "" : (" " + custom_name)) + (display_name == null ? "" : (display_name + " ")) + "\n");
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -184,6 +194,12 @@ public final class PotionInventory extends JavaPlugin implements Listener {
         if( !block) return; // we dont register if it is other inventory
         getLogger().info("Inventory closed");
         // save the inventory to a file because it is updated
+    }
+
+    public boolean FileExists(String fileName) {
+        File folder = new File(getDataFolder(), "inventories");
+        File file = new File(folder, fileName + ".yml");
+        return file.exists();
     }
 }
 
