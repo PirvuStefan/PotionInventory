@@ -14,7 +14,10 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Map;
@@ -89,16 +92,25 @@ public final class PotionInventory extends JavaPlugin implements Listener {
         // add the potions to the inventory
          // the fuck ?
         // open the inventory for the player
-        getLogger().info(player.getName());
-        createInventory(player.getName()); // only if it does not exist
+        createInventory(player.getName(),inv); // load the inventory from the yml file
         player.openInventory(inv);
     }
 
-    public void createInventory(String PlayerName) {
+    public void createInventory(String PlayerName, Inventory inv) {
         // Retrieve the player's inventory from the map
         File folder = new File(getDataFolder(), "inventories");
         File file = new File(folder, PlayerName + ".yml");
-        if( !file.exists()) createInventoryFile(PlayerName);
+        if( !file.exists()) createInventoryFile(PlayerName); // if no such file exist, we create one
+
+       try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+           for( int i = 0;i<=8;i++){
+                String first = reader.readLine(); // Read the next line from the file
+                String second = reader.readLine(); // Read the next line from the file
+           }
+       } catch (IOException e) {
+           e.printStackTrace();
+       }
+
     }
 
     public void createInventoryFile(String PlayerName){
