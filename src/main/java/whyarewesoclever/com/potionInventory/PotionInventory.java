@@ -104,8 +104,18 @@ public final class PotionInventory extends JavaPlugin implements Listener {
 
        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
            for( int i = 0;i<=8;i++){
-                String first = reader.readLine(); // Read the next line from the file
+                String material = reader.readLine(); // Read the next line from the file
                 String second = reader.readLine(); // Read the next line from the file
+                String json = null;
+                String customName = null;
+                String displayName = null;
+               String[] parts = second.split(" ", 3); // Split into at most 3 parts
+               json = parts.length > 0 ? parts[0] : null;
+               customName = parts.length > 1 ? parts[1] : null;
+               displayName = parts.length > 2 ? parts[2] : null;
+               getLogger().info("Material: " + material);
+               getLogger().info(json + " " + customName + " " + displayName);
+
            }
        } catch (IOException e) {
            e.printStackTrace();
