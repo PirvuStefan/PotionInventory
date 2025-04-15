@@ -1,5 +1,7 @@
 package whyarewesoclever.com.potionInventory;
 
+import de.tr7zw.nbtapi.NBT;
+import de.tr7zw.nbtapi.NBTItem;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -21,6 +23,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Objects;
 
 import static org.bukkit.Bukkit.getLogger;
 
@@ -115,6 +118,17 @@ public final class PotionInventory extends JavaPlugin implements Listener {
                displayName = parts.length > 2 ? parts[2] : null;
                getLogger().info("Material: " + material);
                getLogger().info(json + " " + customName + " " + displayName);
+               ItemStack item = new ItemStack(Objects.requireNonNull(Material.getMaterial(material)));
+               if(!material.equals("AIR")) {
+                   NBTItem nbtItem = new NBTItem(item);
+                   assert json != null;
+                   nbtItem.mergeCompound(NBT.parseNBT(json));
+                   if(displayName!=null) nbtItem.setString("display", displayName);
+                   if(customName != null ) nbtItem.setString("custom_name", customName);
+                   item = nbtItem.getItem();
+
+                   inv.setItem(i, item);
+               }
 
            }
        } catch (IOException e) {
