@@ -90,43 +90,18 @@ public final class PotionInventory extends JavaPlugin implements Listener {
          // the fuck ?
         // open the inventory for the player
         getLogger().info(player.getName());
-        createInventory(inv,player.getName());
+        createInventory(player.getName()); // only if it does not exist
         player.openInventory(inv);
     }
 
-    public void createInventory(Inventory inv, String PlayerName) {
+    public void createInventory(String PlayerName) {
         // Retrieve the player's inventory from the map
-        PlayerItem[] playStock = inventories.get(PlayerName);
-
-        // If the inventory does not exist, initialize it
-        if (playStock == null) {
-            PlayerItem gol = new PlayerItem("AIR", "{}");
-            PlayerItem[] array = new PlayerItem[9]; // Creates an array with 9 slots, all initially null.
-            for (int i = 0; i < 9; i++) {
-                array[i] = gol;
-            }
-            inventories.put(PlayerName, array);
-            playStock = array; // Assign the newly created inventory to playStock
-        }
-
-        // Populate the inventory with items
-        for (int i = 0; i < 9; i++) {
-            PlayerItem item = playStock[i];
-            if (item != null) {
-                String json = item.getJson();
-                String material = item.getMaterial();
-                String display_name = item.getDisplayName();
-                String custom_name = item.getCustomName();
-
-                // Add the item to the inventory (example logic, adjust as needed)
-                ItemStack stack = new ItemStack(Material.valueOf(material));
-                inv.setItem(i, stack);
-            }
-        }
-        updateInventoryFile(PlayerName, playStock);
+        File folder = new File(getDataFolder(), "inventories");
+        File file = new File(folder, PlayerName + ".yml");
+        if( !file.exists()) createInventoryFile(PlayerName);
     }
 
-    public void updateInventoryFile(String PlayerName, PlayerItem[] playStock){
+    public void createInventoryFile(String PlayerName){
         // update the inventory file when we close the inventory
         // we should also register it in the folder when any changes do occur in the inventory, like when we open the gui and when we close it since that it when we have to stock it
         // updateInvetoryFile()
@@ -142,18 +117,16 @@ public final class PotionInventory extends JavaPlugin implements Listener {
         // create the file if it doesn't exist
         // write the inventory to the file
         for(int i = 0;i<=8;i++){
-            PlayerItem item = playStock[i];
-            String json = item.getJson();
-            String material = item.getMaterial();
-            String display_name = item.getDisplayName();
-            String custom_name = item.getCustomName();
+            String json = "{}";
+            String material = "AIR";
             // write the json to the file
             // write the material to the file
             // write the display name to the file
             // write the custom name to the file
             try ( java.io.FileWriter writer = new java.io.FileWriter(file, true)) {
                 writer.write(material + "\n");
-                writer.write(json + (custom_name == null ? "" : (" " + custom_name)) + (display_name == null ? "" : (display_name + " ")) + "\n");
+                writer.write(json + "\n");
+                //writer.write(json + (custom_name == null ? "" : (" " + custom_name)) + (display_name == null ? "" : (display_name + " ")) + "\n");
             } catch (Exception e) {
                 e.printStackTrace();
             }
