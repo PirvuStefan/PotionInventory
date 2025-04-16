@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import static org.bukkit.Bukkit.getLogger;
+import static org.bukkit.Registry.MATERIAL;
 
 public final class PotionInventory extends JavaPlugin implements Listener {
 
@@ -112,10 +113,11 @@ public final class PotionInventory extends JavaPlugin implements Listener {
                 String json = null;
                 String customName = null;
                 String displayName = null;
-               String[] parts = second.split(" ", 3); // Split into at most 3 parts
-               json = parts.length > 0 ? parts[0] : null;
-               customName = parts.length > 1 ? parts[1] : null;
-               displayName = parts.length > 2 ? parts[2] : null;
+//               String[] parts = second.split(" ", 3); // Split into at most 3 parts
+//               json = parts.length > 0 ? parts[0] : null;
+//               customName = parts.length > 1 ? parts[1] : null;
+//               displayName = parts.length > 2 ? parts[2] : null;
+               json = second;
                getLogger().info("Material: " + material);
                getLogger().info(json + " " + customName + " " + displayName);
                ItemStack item = new ItemStack(Objects.requireNonNull(Material.getMaterial(material)));
@@ -188,8 +190,8 @@ public final class PotionInventory extends JavaPlugin implements Listener {
         InventoryView view = player.getOpenInventory();
         Inventory inventory = event.getInventory();
         //boolean block = !view.getTitle().equals(ChatColor.DARK_AQUA + "ᴄʀᴇᴀᴛᴇ ᴄᴜꜱᴛᴏᴍ ᴛʀᴀᴅᴇꜱ");
-        boolean block = view.getTitle().equals("ᴘᴏᴛɪᴏɴ ɪɴᴠᴇɴᴛᴏʀ");
-        getLogger().info(view.getTitle());
+        boolean block = view.getTitle().equals("ᴘᴏᴛɪᴏɴ ɪɴᴠᴇɴᴛᴏʀʏ");
+        getLogger().info("CLICKED");
         if( !block) return; // we dont register if it is other inventory
 
     }
@@ -199,10 +201,33 @@ public final class PotionInventory extends JavaPlugin implements Listener {
         Player player = (Player) event.getPlayer();
         InventoryView view = player.getOpenInventory();
         Inventory inventory = event.getInventory();
-        boolean block = view.getTitle().equals("ᴘᴏᴛɪᴏɴ ɪɴᴠᴇɴᴛᴏʀ");
+        String fileName = player.getName() + ".yml";
+        boolean block = view.getTitle().equals("ᴘᴏᴛɪᴏɴ ɪɴᴠᴇɴᴛᴏʀʏ");
         if( !block) return; // we dont register if it is other inventory
         getLogger().info("Inventory closed");
         // save the inventory to a file because it is updated
+        try (java.io.FileWriter writer = new java.io.FileWriter(new File(getDataFolder(), "inventories/" + fileName))) {
+            for (int i = 0; i <= 8; i++) {
+                ItemStack item = inventory.getItem(i);
+                String material;
+                String json;
+                String custom_name = null;
+                String display_name = null;
+                if (item == null) {
+                    material = "AIR";
+                    json = "{}";
+                } else {
+                    material = item.getType().toString();
+                    getInstance().getLogger().info("Material: " + material);
+                    NBTItem nbtItem = new NBTItem(item);
+                    json = nbtItem.toString();
+                }
+                writer.write(material + "\n");
+                writer.write(json + "\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
