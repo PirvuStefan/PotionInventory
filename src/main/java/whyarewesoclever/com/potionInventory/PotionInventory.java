@@ -2,10 +2,12 @@ package whyarewesoclever.com.potionInventory;
 
 import de.tr7zw.nbtapi.NBT;
 import de.tr7zw.nbtapi.NBTItem;
+import de.tr7zw.nbtapi.iface.ReadWriteNBT;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandMap;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -126,9 +128,9 @@ public final class PotionInventory extends JavaPlugin implements Listener {
 
 
 
-                   NBT.modifyComponents(item, nbt -> {
-                       nbt.resolveCompound(jsonHolder[0]); // Parse the JSON string into the NBT
-                       getLogger().info("NBT Tag updated with JSON: " + jsonHolder[0]);
+
+                   NBT.modify(item, nbt -> {
+                       nbt.mergeCompound(NBT.parseNBT(jsonHolder[0]));
                    });
 
                    inv.setItem(i, item);
@@ -231,10 +233,12 @@ public final class PotionInventory extends JavaPlugin implements Listener {
                         getLogger().info("NBT Tag: " + nbt);
                     });
 
+
                 }
                 json = jsonHolder[0];
                 writer.write(material + "\n");
                 writer.write(json + "\n");
+
             }
         } catch (IOException e) {
             e.printStackTrace();
