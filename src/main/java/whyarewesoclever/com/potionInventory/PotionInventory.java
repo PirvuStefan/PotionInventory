@@ -31,7 +31,7 @@ import static org.bukkit.Registry.MATERIAL;
 public final class PotionInventory extends JavaPlugin implements Listener {
 
 
-    Map<String, PlayerItem[]> inventories = new java.util.HashMap<>();
+
 
     public static PotionInventory getInstance() {
         return getPlugin(PotionInventory.class);
@@ -111,23 +111,25 @@ public final class PotionInventory extends JavaPlugin implements Listener {
                 String material = reader.readLine(); // Read the next line from the file
                 String second = reader.readLine(); // Read the next line from the file
                 String json = null;
-                String customName = null;
-                String displayName = null;
+
 //               String[] parts = second.split(" ", 3); // Split into at most 3 parts
 //               json = parts.length > 0 ? parts[0] : null;
 //               customName = parts.length > 1 ? parts[1] : null;
 //               displayName = parts.length > 2 ? parts[2] : null;
                json = second;
                getLogger().info("Material: " + material);
-               getLogger().info(json + " " + customName + " " + displayName);
+               getLogger().info(json);
                ItemStack item = new ItemStack(Objects.requireNonNull(Material.getMaterial(material)));
                if(!material.equals("AIR")) {
-                   NBTItem nbtItem = new NBTItem(item);
-                   assert json != null;
-                   nbtItem.mergeCompound(NBT.parseNBT(json));
-                   if(displayName!=null) nbtItem.setString("display", displayName);
-                   if(customName != null ) nbtItem.setString("custom_name", customName);
-                   item = nbtItem.getItem();
+                   String [] jsonHolder = new String[1];
+                   jsonHolder[0] = json;
+
+
+
+                   NBT.modifyComponents(item, nbt -> {
+                       nbt.resolveCompound(jsonHolder[0]); // Parse the JSON string into the NBT
+                       getLogger().info("NBT Tag updated with JSON: " + jsonHolder[0]);
+                   });
 
                    inv.setItem(i, item);
                }
@@ -193,6 +195,8 @@ public final class PotionInventory extends JavaPlugin implements Listener {
         boolean block = view.getTitle().equals("ᴘᴏᴛɪᴏɴ ɪɴᴠᴇɴᴛᴏʀʏ");
         getLogger().info("CLICKED");
         if( !block) return; // we dont register if it is other inventory
+//        if( !checkPotion(event.getCurrentItem()))
+           // event.setCancelled(true); // we cancel the event if it is a potion
 
     }
 
@@ -211,23 +215,40 @@ public final class PotionInventory extends JavaPlugin implements Listener {
                 ItemStack item = inventory.getItem(i);
                 String material;
                 String json;
-                String custom_name = null;
-                String display_name = null;
+                String[] jsonHolder = new String[1];
+
                 if (item == null) {
                     material = "AIR";
                     json = "{}";
                 } else {
                     material = item.getType().toString();
                     getInstance().getLogger().info("Material: " + material);
-                    NBTItem nbtItem = new NBTItem(item);
-                    json = nbtItem.toString();
+
+                    NBT.getComponents(item, nbt -> {
+
+                        jsonHolder[0] = nbt.toString();
+
+                        getLogger().info("NBT Tag: " + nbt);
+                    });
+
                 }
+                json = jsonHolder[0];
                 writer.write(material + "\n");
                 writer.write(json + "\n");
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean checkPotion(ItemStack itemStack){
+
+        if(itemStack == null) return true;
+        if(itemStack.getType() == Material.AIR) return true;
+        if(itemStack.getType() == Material.POTION) return true;
+        if(itemStack.getType() == Material.SPLASH_POTION) return true;
+        if(itemStack.getType() == Material.LINGERING_POTION) return true;
+        return false;
     }
 
 }
