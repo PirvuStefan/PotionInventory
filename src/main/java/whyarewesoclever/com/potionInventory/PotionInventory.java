@@ -281,22 +281,16 @@ public final class PotionInventory extends JavaPlugin implements Listener {
 
         Player player = event.getPlayer();
         ItemStack itemInHand = player.getInventory().getItemInMainHand();
-
-        // Check if the player has an item in hand
-        if (itemInHand.getType() == Material.AIR) {
-            return;
-        }
-
         // Now you can test if the item is what you're looking for
-        if( hasDisplayNameCheck(itemInHand, itemName)) {
-            // Open the inventory for the player
-            OpenInventory(player);
-        }
+        if( hasDisplayNameCheck(itemInHand, itemName)) OpenInventory(player);
+
     }
 
     public boolean hasDisplayNameCheck(ItemStack item, String name){
 
         if(item == null)
+            return false;
+        if(item.getType() == Material.AIR)
             return false;
 
         return  NBT.getComponents(item, nbt -> {
