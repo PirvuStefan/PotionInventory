@@ -127,13 +127,16 @@ public final class PotionInventory extends JavaPlugin implements Listener {
                    jsonHolder[0] = json;
 
 
+                   ReadWriteNBT nbt = NBT.parseNBT(jsonHolder[0]);
+                   ItemStack itemStack = NBT.itemStackFromNBT(nbt);
 
 
-                   NBT.modify(item, nbt -> {
-                       nbt.mergeCompound(NBT.parseNBT(jsonHolder[0]));
-                   });
 
-                   inv.setItem(i, item);
+
+
+
+
+                   inv.setItem(i, itemStack);
                }
 
            }
@@ -226,16 +229,20 @@ public final class PotionInventory extends JavaPlugin implements Listener {
                     material = item.getType().toString();
                     getInstance().getLogger().info("Material: " + material);
 
-                    NBT.getComponents(item, nbt -> {
+//                    NBT.getComponents(item, nbt -> {
+//
+//                        jsonHolder[0] = nbt.toString();
+//
+//                        getLogger().info("NBT Tag: " + nbt);
+//                    });
 
-                        jsonHolder[0] = nbt.toString();
-
-                        getLogger().info("NBT Tag: " + nbt);
-                    });
+                    ReadWriteNBT nbt = NBT.itemStackToNBT(item);
+                    json = nbt.toString();
+                    getLogger().info("NBT Tag: " + nbt);
 
 
                 }
-                json = jsonHolder[0];
+               // json = jsonHolder[0];
                 writer.write(material + "\n");
                 writer.write(json + "\n");
 
