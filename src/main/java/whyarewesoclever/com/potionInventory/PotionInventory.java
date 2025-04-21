@@ -36,6 +36,8 @@ import static org.bukkit.Registry.MATERIAL;
 public final class PotionInventory extends JavaPlugin implements Listener {
 
         String itemName = null;
+        String openSound = null;
+        String closeSound = null;
 
 
     public static PotionInventory getInstance() {
@@ -80,6 +82,8 @@ public final class PotionInventory extends JavaPlugin implements Listener {
         // getServer().getPluginManager().registerEvents(new PotionInventory(), this);
         // this will register the events for the plugin
         itemName = getConfig().getString("Name");
+        openSound = getConfig().getString("OpenSound");
+        closeSound = getConfig().getString("CloseSound");
         getLogger().info(itemName);
 
     }
@@ -215,6 +219,8 @@ public final class PotionInventory extends JavaPlugin implements Listener {
         boolean block = view.getTitle().equals("ᴘᴏᴛɪᴏɴ ɪɴᴠᴇɴᴛᴏʀʏ");
         if( !block) return; // we dont register if it is other inventory
 
+        if( !closeSound.equals("none") ) player.playSound(player.getLocation(), closeSound, 1.0f, 1.0f);
+
         // save the inventory to a file because it is updated
         try (java.io.FileWriter writer = new java.io.FileWriter(new File(getDataFolder(), "inventories/" + fileName))) {
             for (int i = 0; i <= 8; i++) {
@@ -275,7 +281,10 @@ public final class PotionInventory extends JavaPlugin implements Listener {
         Player player = event.getPlayer();
         ItemStack itemInHand = player.getInventory().getItemInMainHand();
         // Now you can test if the item is what you're looking for
-        if( hasDisplayNameCheck(itemInHand, itemName)) OpenInventory(player);
+        if( hasDisplayNameCheck(itemInHand, itemName)){
+            OpenInventory(player);
+           if( !openSound.equals("none") ) player.playSound(player.getLocation(), openSound, 1.0f, 1.0f);
+        }
 
     }
 
