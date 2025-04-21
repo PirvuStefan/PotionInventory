@@ -1,1 +1,4 @@
-# Configuration file for  the PotionInventory Plugin
+# Configuration file for the PotionInventory Plugin
+# Name for the item that will be used to open the inventory
+Name : Potion Inventory
+# This is the name that will be displayed in the inventory title ; minecraft:custom_name property

@@ -35,7 +35,7 @@ import static org.bukkit.Registry.MATERIAL;
 
 public final class PotionInventory extends JavaPlugin implements Listener {
 
-
+        String itemName = null;
 
 
     public static PotionInventory getInstance() {
@@ -79,6 +79,7 @@ public final class PotionInventory extends JavaPlugin implements Listener {
        getServer().getPluginManager().registerEvents(this, this);  // should register the events
         // getServer().getPluginManager().registerEvents(new PotionInventory(), this);
         // this will register the events for the plugin
+        itemName = getConfig().getString("Name");
 
     }
 
@@ -289,6 +290,12 @@ public final class PotionInventory extends JavaPlugin implements Listener {
         if( itemInHand.getType() == Material.BUNDLE) {
             OpenInventory(player);
         }
+    }
+
+    public boolean checkName(String name, ItemStack itemStack){
+        if( itemStack == null) return false;
+
+        return false;
     }
 
 }
