@@ -124,8 +124,6 @@ public final class PotionInventory extends JavaPlugin implements Listener {
 //               customName = parts.length > 1 ? parts[1] : null;
 //               displayName = parts.length > 2 ? parts[2] : null;
                json = second;
-               getLogger().info("Material: " + material);
-               getLogger().info(json);
                ItemStack item = new ItemStack(Objects.requireNonNull(Material.getMaterial(material)));
                if(!material.equals("AIR")) {
                    String [] jsonHolder = new String[1];
@@ -203,11 +201,9 @@ public final class PotionInventory extends JavaPlugin implements Listener {
         Inventory inventory = event.getInventory();
         //boolean block = !view.getTitle().equals(ChatColor.DARK_AQUA + "ᴄʀᴇᴀᴛᴇ ᴄᴜꜱᴛᴏᴍ ᴛʀᴀᴅᴇꜱ");
         boolean block = view.getTitle().equals("ᴘᴏᴛɪᴏɴ ɪɴᴠᴇɴᴛᴏʀʏ");
-        getLogger().info(itemName);
         if( !block) return; // we dont register if it is other inventory
-//        if( !checkPotion(event.getCurrentItem()))
-           // event.setCancelled(true); // we cancel the event if it is a potion
-
+        if( !checkPotion(event.getCurrentItem()))
+            event.setCancelled(true); // we cancel the event if it is a potion
     }
 
     @EventHandler
@@ -218,7 +214,7 @@ public final class PotionInventory extends JavaPlugin implements Listener {
         String fileName = player.getName() + ".yml";
         boolean block = view.getTitle().equals("ᴘᴏᴛɪᴏɴ ɪɴᴠᴇɴᴛᴏʀʏ");
         if( !block) return; // we dont register if it is other inventory
-        getLogger().info("Inventory closed");
+
         // save the inventory to a file because it is updated
         try (java.io.FileWriter writer = new java.io.FileWriter(new File(getDataFolder(), "inventories/" + fileName))) {
             for (int i = 0; i <= 8; i++) {
@@ -232,7 +228,7 @@ public final class PotionInventory extends JavaPlugin implements Listener {
                     json = "{}";
                 } else {
                     material = item.getType().toString();
-                    getInstance().getLogger().info("Material: " + material);
+
 
 //                    NBT.getComponents(item, nbt -> {
 //
@@ -243,9 +239,6 @@ public final class PotionInventory extends JavaPlugin implements Listener {
 
                     ReadWriteNBT nbt = NBT.itemStackToNBT(item);
                     json = nbt.toString();
-                    getLogger().info("NBT Tag: " + nbt);
-
-
                 }
                // json = jsonHolder[0];
                 writer.write(material + "\n");
