@@ -11,8 +11,11 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
@@ -260,6 +263,32 @@ public final class PotionInventory extends JavaPlugin implements Listener {
         if(itemStack.getType() == Material.SPLASH_POTION) return true;
         if(itemStack.getType() == Material.LINGERING_POTION) return true;
         return false;
+    }
+
+    @EventHandler
+    public void onPlayerInteract(PlayerInteractEvent event) {
+        // Check if it's a right-click action
+        if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+            return;
+        }
+
+        // Ignore off-hand to prevent duplicate events
+        if (event.getHand() == EquipmentSlot.OFF_HAND) {
+            return;
+        }
+
+        Player player = event.getPlayer();
+        ItemStack itemInHand = player.getInventory().getItemInMainHand();
+
+        // Check if the player has an item in hand
+        if (itemInHand.getType() == Material.AIR) {
+            return;
+        }
+
+        // Now you can test if the item is what you're looking for
+        if( itemInHand.getType() == Material.BUNDLE) {
+            OpenInventory(player);
+        }
     }
 
 }
