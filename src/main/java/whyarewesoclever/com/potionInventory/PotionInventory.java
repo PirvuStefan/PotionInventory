@@ -80,6 +80,7 @@ public final class PotionInventory extends JavaPlugin implements Listener {
         // getServer().getPluginManager().registerEvents(new PotionInventory(), this);
         // this will register the events for the plugin
         itemName = getConfig().getString("Name");
+        getLogger().info(itemName);
 
     }
 
@@ -202,7 +203,7 @@ public final class PotionInventory extends JavaPlugin implements Listener {
         Inventory inventory = event.getInventory();
         //boolean block = !view.getTitle().equals(ChatColor.DARK_AQUA + "ᴄʀᴇᴀᴛᴇ ᴄᴜꜱᴛᴏᴍ ᴛʀᴀᴅᴇꜱ");
         boolean block = view.getTitle().equals("ᴘᴏᴛɪᴏɴ ɪɴᴠᴇɴᴛᴏʀʏ");
-        getLogger().info("CLICKED");
+        getLogger().info(itemName);
         if( !block) return; // we dont register if it is other inventory
 //        if( !checkPotion(event.getCurrentItem()))
            // event.setCancelled(true); // we cancel the event if it is a potion
@@ -287,15 +288,28 @@ public final class PotionInventory extends JavaPlugin implements Listener {
         }
 
         // Now you can test if the item is what you're looking for
-        if( itemInHand.getType() == Material.BUNDLE) {
+        if( hasDisplayNameCheck(itemInHand, itemName)) {
+            // Open the inventory for the player
             OpenInventory(player);
         }
     }
 
-    public boolean checkName(String name, ItemStack itemStack){
-        if( itemStack == null) return false;
+    public boolean hasDisplayNameCheck(ItemStack item, String name){
 
-        return false;
+        if(item == null)
+            return false;
+
+        return  NBT.getComponents(item, nbt -> {
+
+            String customName = nbt.getString("minecraft:item_name");
+
+
+
+            int index = customName.indexOf(name);
+            return index != -1;
+
+
+        });
     }
 
 }
