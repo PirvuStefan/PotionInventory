@@ -2,3 +2,8 @@
 # Name for the item that will be used to open the inventory
 Name : Potion Inventory
 # This is the name that will be displayed in the inventory title ; minecraft:custom_name property
+OpenSound : none
+CloseSound : none
+# The sound that will be played when the inventory is opened / closed
+# Placeholder : none   - so that no sound is played when the inventory is opened / closed
+# Permission : potioninventory.use   - so that the player can run the command /potioninventory ( opens the potion inventory you do have without the need to have the special item )
