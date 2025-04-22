@@ -29,6 +29,7 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import static org.bukkit.Bukkit.getLogger;
 import static org.bukkit.Registry.MATERIAL;
@@ -38,6 +39,8 @@ public final class PotionInventory extends JavaPlugin implements Listener {
         String itemName = null;
         String openSound = null;
         String closeSound = null;
+
+        Set< String > potionTypes = Set.of("POTION", "SPLASH_POTION", "LINGERING_POTION");
 
 
     public static PotionInventory getInstance() {
@@ -84,22 +87,14 @@ public final class PotionInventory extends JavaPlugin implements Listener {
         itemName = getConfig().getString("Name");
         openSound = getConfig().getString("OpenSound");
         closeSound = getConfig().getString("CloseSound");
-        getLogger().info(itemName);
-
+        initialiseSet();
     }
 
     @Override
     public void onDisable() {
         // Plugin shutdown logic
     }
-    public boolean CheckPotion(ItemStack item){
 
-        return switch (item.getType()) {
-            case POTION, SPLASH_POTION, LINGERING_POTION -> true;
-            default -> false;
-        };
-       // return true only if the item is a potion ( might also introduce tipped arrows for true case )
-    }
 
     public void OpenInventory(Player player){
         // open the inventory for the player
@@ -263,7 +258,7 @@ public final class PotionInventory extends JavaPlugin implements Listener {
         if(itemStack.getType() == Material.POTION) return true;
         if(itemStack.getType() == Material.SPLASH_POTION) return true;
         if(itemStack.getType() == Material.LINGERING_POTION) return true;
-        return false;
+        return potionTypes.contains(itemStack.getType().toString());
     }
 
     @EventHandler
@@ -306,6 +301,35 @@ public final class PotionInventory extends JavaPlugin implements Listener {
 
 
         });
+    }
+
+    public void initialiseSet(){
+        if( !getConfig().getBoolean("CanAlsoUsePotionIngredients") )
+            return;
+        // we can also store the potion ingredients
+        // we can also store the potion ingredients
+        potionTypes.add("BREWING_STAND");
+        potionTypes.add("BLAZE_POWDER");
+        potionTypes.add("GLASS_BOTTLE");
+        potionTypes.add("GUNPOWDER");
+        potionTypes.add("FERMENTED_SPIDER_EYE");
+        potionTypes.add("GLOWSTONE_DUST");
+        potionTypes.add("GOLDEN_CARROT");
+        potionTypes.add("NETHER_WART");
+        potionTypes.add("REDSTONE_DUST");
+        potionTypes.add("SPIDER_EYE");
+        potionTypes.add("GLISTERING_MELON_SLICE");
+        potionTypes.add("MAGMA_CREAM");
+        potionTypes.add("SUGAR");
+        potionTypes.add("PHANTOM_MEMBRANE");
+        potionTypes.add("TIPPED_ARROW");
+        potionTypes.add("DRAGON_BREATH");
+        potionTypes.add("SPECKLED_MELON");
+        potionTypes.add("RABBIT_FOOT");
+        potionTypes.add("GHAST_TEAR");
+        potionTypes.add("GLOWSTONE");
+
+        // not sure if they are all
     }
 
 }
