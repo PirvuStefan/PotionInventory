@@ -330,7 +330,7 @@ public final class PotionInventory extends JavaPlugin implements Listener {
         potionTypes.add("GLOWSTONE");
 
         // not sure if they are all
-    }
+    }//fututi
 
 }
 
