@@ -9,3 +9,4 @@ CloseSound : none
 # Permission : potioninventory.use   - so that the player can run the command /potioninventory ( opens the potion inventory you do have without the need to have the special item )
 CanAlsoUsePotionIngredients : false # by default, the potion ingredients are not usable in the potion inventory
 # By setting this to true, you can also store potion ingredients in the potion inventory
+# Restart the server to apply the changes
